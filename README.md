@@ -1,3 +1,3 @@
 # munki-nopkg
 
-A collection of "nopkg" scripts for Munki.
+Useful "nopkg" scripts for Munki. Use at your own risk.

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>_metadata</key>
+	<dict>
+		<key>created_by</key>
+		<string>dmnelson</string>
+		<key>creation_date</key>
+		<date>2018-10-03T17:43:16Z</date>
+		<key>munki_version</key>
+		<string>3.4.1.3557</string>
+		<key>os_version</key>
+		<string>10.13.6</string>
+	</dict>
+	<key>autoremove</key>
+	<false/>
+	<key>catalogs</key>
+	<array>
+		<string>stable</string>
+	</array>
+	<key>category</key>
+	<string>Scripts</string>
+	<key>description</key>
+	<string>Installation turns Bluetooth on. Removal turns Bluetooth off.</string>
+	<key>developer</key>
+	<string>David Nelson</string>
+	<key>display_name</key>
+	<string>Bluetooth On/Off</string>
+	<key>icon_name</key>
+	<string>Bluetooth.png</string>
+	<key>installcheck_script</key>
+	<string>#!/bin/bash
+
+if [[ `/usr/bin/defaults read "/Library/Preferences/com.apple.Bluetooth" ControllerPowerState` -ne 1 ]]; 
+then
+      exit 0
+else 
+      exit 1
+fi</string>
+	<key>installer_type</key>
+	<string>nopkg</string>
+	<key>minimum_os_version</key>
+	<string>10.4.0</string>
+	<key>name</key>
+	<string>BluetoothPower</string>
+	<key>notes</key>
+	<string>Munki nopkg script to enable or disable Bluetooth. Installation turns Bluetooth on, uninstallation turns it back off. Inspired by Greg Neagle’s TurnOffBluetooth package. 
+https://github.com/munki/munki-pkg/tree/master/TurnOffBluetooth/scripts</string>
+	<key>postinstall_script</key>
+	<string>#!/bin/sh
+
+/usr/bin/defaults write "/Library/Preferences/com.apple.Bluetooth" ControllerPowerState -int 1 
+
+if [[ `/usr/bin/pgrep bluetoothd` ]]; then 
+	/usr/bin/killall -HUP bluetoothd 
+elif [[ `/usr/bin/pgrep blued` ]]; then 
+	/usr/bin/killall -HUP blued
+fi</string>
+	<key>unattended_install</key>
+	<true/>
+	<key>unattended_uninstall</key>
+	<true/>
+	<key>uninstall_method</key>
+	<string>uninstall_script</string>
+	<key>uninstall_script</key>
+	<string>#!/bin/sh
+
+/usr/bin/defaults write "/Library/Preferences/com.apple.Bluetooth" ControllerPowerState -int 0
+
+if [[ `/usr/bin/pgrep bluetoothd` ]]; then 
+	/usr/bin/killall -HUP bluetoothd 
+elif [[ `/usr/bin/pgrep blued` ]]; then 
+	/usr/bin/killall -HUP blued
+fi</string>
+	<key>uninstallable</key>
+	<true/>
+	<key>uninstallcheck_script</key>
+	<string>#!/bin/bash
+
+if [[ `/usr/bin/defaults read "/Library/Preferences/com.apple.Bluetooth" ControllerPowerState` -ne 0 ]]; 
+then
+      exit 0
+else 
+      exit 1
+fi</string>
+	<key>update_for</key>
+	<array/>
+	<key>version</key>
+	<string>1.0</string>
+</dict>
+</plist>
